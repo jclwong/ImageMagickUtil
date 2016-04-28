@@ -1,6 +1,6 @@
 # ImageMagickBatchResize
 
-Bash script to batch resize images to specified size
+Bash script to batch resize images to specified size. Aspect-ratio is maintained.
 
 #Accepts: 
 - png

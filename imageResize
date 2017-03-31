@@ -1,0 +1,87 @@
+#!/bin/sh
+#
+# This is a script that uses ImageMagick to resize (downsize only) a single image to a specified size.
+#
+# Accepts: 	png, jpg, jpeg, gif
+# Outputs: 	png
+# Usage: 	./imageResize.sh WIDTH HEIGHT filename
+# Ex:		./imageResize.sh 320 480 iPhone.png
+# 
+# Latest Test Environment
+# OSX:			10.12.3
+# ImageMagick:	7.0.5-4 Q16 x86_64
+# 
+
+
+# =====================================
+# ==========[ Library Check ]==========
+# =====================================
+
+command -v convert >/dev/null 2>&1 || { 
+	echo >&2 'Error: cannot find "convert" command.... Is ImageMagick installed?'; 
+	exit 1; 
+}
+
+# ================================================
+# ==========[ Arguments Validity Check ]==========
+# ================================================
+
+if [ "$#" -ne 3 ]; then
+	echo "Error: Incorrect number of arguments ($#). Needs to be 3."
+	echo "Error: $@"
+	echo "Usage: imageResize.sh WIDTH HEIGHT fileName    -> (ie) imageResize 360 480 test.png"
+	exit 1
+fi
+
+width=$1
+height=$2
+filePath=$3
+
+numRegExp='^[0-9]+$'
+if ! [[ $width =~ $numRegExp ]] ; then
+	echo "Error: Width is not a valid number" >&2
+	exit 1
+fi
+if ! [[ $height =~ $numRegExp ]] ; then
+	echo "Error: Height is not a valid number" >&2
+	exit 1
+fi
+
+if [ ! -f "$filePath" ]; then
+	echo "File ($filePath) not found!"
+	exit 1
+fi
+
+fileFullName=`echo $filePath|grep -i ".png\|.jpg\|.jpeg\|.gif"`
+if [ ! -n "$fileFullName" ] ; then
+	echo "File not a valid format (png,jpg,jpeg,gif)"
+	exit 1
+fi
+	
+
+# ==========================================
+# ==========[ Converting Process ]==========
+# ==========================================
+
+echo "File: \t\t"$fileFullName
+echo "Resolution:\t""$width""x""$height"
+printf "Converting:\t...."
+
+fileName="${fileFullName%.*}"
+fileExt="${fileFullName##*.}"
+
+
+# 1/3 - Strip(reconvert) non-standard PNG (Left by amazing Photoshop.)
+if [ $fileExt == "png" ] ; then
+	convert "$fileFullName" -strip "$fileFullName"
+fi
+
+# 2/3 - The actual conversion
+convert "$fileName"".""$fileExt" -resize "$width""x""$height"\> "$fileName"".png"
+
+# 3/3 - Cleanup - Original PNGs are overwritten. Remove anything not originally PNG format
+if [ $fileExt != "png" ] ; then
+	rm $fileFullName
+fi
+
+echo " Done!"		

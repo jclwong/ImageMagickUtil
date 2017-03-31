@@ -1,21 +1,26 @@
 # ImageMagickBatchResize
 
-Bash script to batch resize images to specified size. 
+Bash script to batch resize (downsize only) images to specified size. 
 - Aspect-ratio is maintained.
 - Images smaller than the specified size in both Width and Height, will be unaltered
 
-#Accepts: 
+Accepts: 
 - png
 - jpg, jpeg
 - gif
 
-#Outputs: 
+Outputs: 
 - png
 
-#Usage:
-- ./imgRsz.sh WIDTH HEIGHT
+Single File:
+- Usage: 	./imageResize.sh WIDTH HEIGHT filename
+- Ex:		./imageResize.sh 320 480 iPhone.png
 
-#Tested Environment
-- OSX:			10.11.3
-- ImageMagick:	6.8.8-0 Q16 x86_64
+Batch (all files in directory)
+- Usage: 	./imageResizeBatch.sh WIDTH HEIGHT directoryPath
+- Ex:		./imageResizeBatch.sh 320 480 ~
+
+Latest Tested Environment
+- OSX:			10.12.3
+- ImageMagick:	7.0.5-4 Q16 x86_64
 

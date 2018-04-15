@@ -1,9 +1,8 @@
 #!/bin/sh
 #
-# Use ImageMagick to remove white background color from all images in directory
-# Fuzz: 5%
+# Uses ImageMagick to convert all images in directory to PNG format
 #
-# Accepts: 	png
+# Accepts: 	png, jpg, jpeg, gif
 # Outputs: 	png
 # Usage: 	./imageRemoveBgWhiteBatch DIRPATH
 # Ex:		./imageRemoveBgWhiteBatch ~
@@ -28,8 +27,8 @@ command -v convert >/dev/null 2>&1 || {
 
 if [ "$#" -ne 1 ]; then
 	echo "Error: Incorrect number of arguments ($#). Needs to be 1."
-	echo "Usage: imageRemoveBgWhiteBatch DIRPATH"
-	echo "Example: imageRemoveBgWhiteBatch ~"
+	echo "Usage: imageToPngBatch DIRPATH"
+	echo "Example: imageToPngBatch ~"
 	exit 1
 fi
 
@@ -70,7 +69,7 @@ do
 
 	fileFullName=`echo $f|grep -i ".png\|.jpg\|.jpeg\|.gif\|.tiff"`
 	if [ -n "$fileFullName" ] ; then
-		imageRemoveBgWhite $fileFullName
+		imageToPng $fileFullName
 	fi
 done
 

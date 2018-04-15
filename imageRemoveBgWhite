@@ -28,8 +28,8 @@ command -v convert >/dev/null 2>&1 || {
 
 if [ "$#" -ne 1 ]; then
 	echo "Error: Incorrect number of arguments ($#). Needs to be 1."
-	echo "Usage: imageToPng FILENAME"
-	echo "Example: imageToPng test.png"
+	echo "Usage: imageRemoveBgWhite FILENAME"
+	echo "Example: imageRemoveBgWhite test.png"
 	exit 1
 fi
 

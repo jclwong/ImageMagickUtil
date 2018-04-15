@@ -8,6 +8,7 @@ Some useful IM tools for those (like me) who can't remember all the commands.
 - imageResize
 - imageResizeBatch
 - imageToPng
+- imageToPngBatch
 
 ---
 
@@ -56,3 +57,8 @@ Some useful IM tools for those (like me) who can't remember all the commands.
 - This will also clean image metadata (comments, PNG-chunk data, etc)
 - *Usage: 	./imageToPng FILENAME*
 - *Example:		./imageToPng image.png*
+
+### imageToPngBatch
+- Run **imageToPng** on all images in directory
+- *Usage: 	./imageToPngBatch DIRPATH*
+- *Example:		./imageToPngBatch ~*

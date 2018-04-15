@@ -1,0 +1,61 @@
+#!/bin/sh
+#
+# Uses ImageMagick to convert images inside directory to animated GIF
+#
+# Accepts: 	png, jpg, jpeg, gif
+# Outputs: 	png
+# Usage: 	./imageDirToAnimatedGif DELAY dirPath
+# Ex:		./imageDirToAnimatedGif 20 ~
+# 
+# Latest Test Environment
+# OSX:			10.12.3
+# ImageMagick:	7.0.5-4 Q16 x86_64
+# 
+
+
+# =====================================
+# ==========[ Library Check ]==========
+# =====================================
+
+command -v convert >/dev/null 2>&1 || { 
+	echo >&2 'Error: cannot find "convert" command.... Is ImageMagick installed?'; 
+	exit 1; 
+}
+
+# ================================================
+# ==========[ Arguments Validity Check ]==========
+# ================================================
+
+if [ "$#" -ne 2 ]; then
+	echo "Error: Incorrect number of arguments ($#). Needs to be 2."
+	echo "Usage: imageDirToAnimatedGif DELAY directory"
+	echo "Example: imageDirToAnimatedGif 20 ~"
+
+	exit 1
+fi
+
+delay=$1
+dirPath=$2
+
+
+numRegExp='^[0-9]+$'
+if ! [[ $delay =~ $numRegExp ]] ; then
+	echo "Error: Width is not a valid number" >&2
+	exit 1
+fi
+
+if [ ! -d "$dirPath" ]; then
+   echo "Error: Directory path does not exist ($dirPath)" >&2
+   exit 1
+fi
+
+
+# ==========================================
+# ==========[ Converting Process ]==========
+# ==========================================
+
+printf "Compiling GIF:\t...."
+
+convert -delay $delay -loop 0 -dispose 'Previous' *.png anim.gif
+
+echo " Done!"		

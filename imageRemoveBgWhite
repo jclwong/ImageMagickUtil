@@ -1,0 +1,64 @@
+#!/bin/sh
+#
+# Use ImageMagick to remove white background color
+# Fuzz: 5%
+#
+# Accepts: 	png
+# Outputs: 	png
+# Usage: 	./imageRemoveBgWhite filename
+# Ex:		./imageRemoveBgWhite image.png
+# 
+# Latest Test Environment
+# OSX:			10.12.3
+# ImageMagick:	7.0.5-4 Q16 x86_64
+# 
+
+# =====================================
+# ==========[ Library Check ]==========
+# =====================================
+
+command -v convert >/dev/null 2>&1 || { 
+	echo >&2 'Error: cannot find "convert" command.... Is ImageMagick installed?'; 
+	exit 1; 
+}
+
+# ================================================
+# ==========[ Arguments Validity Check ]==========
+# ================================================
+
+if [ "$#" -ne 1 ]; then
+	echo "Error: Incorrect number of arguments ($#). Needs to be 1."
+	echo "Usage: imageToPng fileName"
+	echo "Example: imageToPng test.png"
+	exit 1
+fi
+
+filePath=$1
+
+if [ ! -f "$filePath" ]; then
+	echo "File ($filePath) not found!"
+	exit 1
+fi
+
+fileFullName=`echo $filePath|grep -i ".png"`
+if [ ! -n "$fileFullName" ] ; then
+	echo "File not a valid format: png"
+	exit 1
+fi
+
+# ==========================================
+# ==========[ Converting Process ]==========
+# ==========================================
+
+echo "File: \t\t"$fileFullName
+printf "Removing BG Color:\t...."
+
+fileName="${fileFullName%.*}"
+fileExt="${fileFullName##*.}"
+
+# Add white border to reach edge of whole image
+# Floodfill and remove on white border
+# Remove white border
+magick "$fileFullName" -fuzz 5% -bordercolor white -border 1 -fill none -draw "alpha 0,0 floodfill" -shave 1x1 "$fileFullName"
+
+echo " Done!"		

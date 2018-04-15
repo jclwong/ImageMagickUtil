@@ -1,11 +1,11 @@
 #!/bin/sh
 #
-# Uses ImageMagick to downsize images
+# This is a script that uses ImageMagick to quantise colors of a single image
 #
 # Accepts: 	png, jpg, jpeg, gif
 # Outputs: 	png
-# Usage: 	./imageResize WIDTH HEIGHT filename
-# Ex:		./imageResize 320 480 image.png
+# Usage: 	./imageColorQuantize filename NUMCOLORS
+# Ex:		./imageColorQuantize colorWheel.png 8
 # 
 # Latest Test Environment
 # OSX:			10.12.3
@@ -26,25 +26,20 @@ command -v convert >/dev/null 2>&1 || {
 # ==========[ Arguments Validity Check ]==========
 # ================================================
 
-if [ "$#" -ne 3 ]; then
-	echo "Error: Incorrect number of arguments ($#). Needs to be 3."
-	echo "Usage: imageResize WIDTH HEIGHT fileName"
-	echo "Example: imageResize 360 480 test.png"
+if [ "$#" -ne 2 ]; then
+	echo "Error:   Incorrect number of arguments ($#). Needs to be 2."
+	echo "Usage:   imageColorQuantize fileName NUMCOLORS"
+	echo "Example: imageColorQuantize colorWheel.png 8"
 
 	exit 1
 fi
 
-width=$1
-height=$2
-filePath=$3
+filePath=$1
+numColors=$2
 
 numRegExp='^[0-9]+$'
-if ! [[ $width =~ $numRegExp ]] ; then
-	echo "Error: Width is not a valid number" >&2
-	exit 1
-fi
-if ! [[ $height =~ $numRegExp ]] ; then
-	echo "Error: Height is not a valid number" >&2
+if ! [[ $numColors =~ $numRegExp ]] ; then
+	echo "Error: numColors is not a valid number" >&2
 	exit 1
 fi
 
@@ -53,9 +48,9 @@ if [ ! -f "$filePath" ]; then
 	exit 1
 fi
 
-fileFullName=`echo $filePath|grep -i ".png\|.jpg\|.jpeg\|.gif\|.tiff"`
+fileFullName=`echo $filePath|grep -i ".png\|.jpg\|.jpeg\|.gif"`
 if [ ! -n "$fileFullName" ] ; then
-	echo "File not a valid format (png,jpg,jpeg,gif,tiff)"
+	echo "File not a valid format (png,jpg,jpeg,gif)"
 	exit 1
 fi
 	
@@ -65,8 +60,7 @@ fi
 # ==========================================
 
 echo "File: \t\t"$fileFullName
-echo "Resolution:\t""$width""x""$height"
-printf "Converting:\t...."
+printf "Quantising:\t...."
 
 fileName="${fileFullName%.*}"
 fileExt="${fileFullName##*.}"
@@ -78,7 +72,7 @@ if [ $fileExt == "png" ] ; then
 fi
 
 # 2/3 - The actual conversion
-convert "$fileName"".""$fileExt" -resize "$width""x""$height"\> "$fileName"".png"
+convert "$fileName"".""$fileExt" -dither None -colors $numColors "$fileName""_quantize_""$numColors.png"
 
 # 3/3 - Cleanup - Original PNGs are overwritten. Remove anything not originally PNG format
 if [ $fileExt != "png" ] ; then

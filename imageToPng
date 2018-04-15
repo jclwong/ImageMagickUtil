@@ -1,17 +1,17 @@
 #!/bin/sh
 #
-# Uses ImageMagick to downsize images
+# Uses ImageMagick to convert an image to PNG format
+# This will also clean the image of metadata
 #
 # Accepts: 	png, jpg, jpeg, gif
 # Outputs: 	png
-# Usage: 	./imageResize WIDTH HEIGHT filename
-# Ex:		./imageResize 320 480 image.png
+# Usage: 	./imageToPng filename
+# Ex:		./imageToPng image.png
 # 
 # Latest Test Environment
 # OSX:			10.12.3
 # ImageMagick:	7.0.5-4 Q16 x86_64
 # 
-
 
 # =====================================
 # ==========[ Library Check ]==========
@@ -26,27 +26,14 @@ command -v convert >/dev/null 2>&1 || {
 # ==========[ Arguments Validity Check ]==========
 # ================================================
 
-if [ "$#" -ne 3 ]; then
-	echo "Error: Incorrect number of arguments ($#). Needs to be 3."
-	echo "Usage: imageResize WIDTH HEIGHT fileName"
-	echo "Example: imageResize 360 480 test.png"
-
+if [ "$#" -ne 1 ]; then
+	echo "Error: Incorrect number of arguments ($#). Needs to be 1."
+	echo "Usage: imageToPng fileName"
+	echo "Example: imageToPng test.png"
 	exit 1
 fi
 
-width=$1
-height=$2
-filePath=$3
-
-numRegExp='^[0-9]+$'
-if ! [[ $width =~ $numRegExp ]] ; then
-	echo "Error: Width is not a valid number" >&2
-	exit 1
-fi
-if ! [[ $height =~ $numRegExp ]] ; then
-	echo "Error: Height is not a valid number" >&2
-	exit 1
-fi
+filePath=$1
 
 if [ ! -f "$filePath" ]; then
 	echo "File ($filePath) not found!"
@@ -58,29 +45,24 @@ if [ ! -n "$fileFullName" ] ; then
 	echo "File not a valid format (png,jpg,jpeg,gif,tiff)"
 	exit 1
 fi
-	
 
 # ==========================================
 # ==========[ Converting Process ]==========
 # ==========================================
 
 echo "File: \t\t"$fileFullName
-echo "Resolution:\t""$width""x""$height"
 printf "Converting:\t...."
 
 fileName="${fileFullName%.*}"
 fileExt="${fileFullName##*.}"
 
+# 1/3 - The actual conversion
+convert "$fileName"".""$fileExt" "$fileName"".png"
 
-# 1/3 - Strip(reconvert) non-standard PNG (Left by amazing Photoshop.)
-if [ $fileExt == "png" ] ; then
-	convert "$fileFullName" -strip "$fileFullName"
-fi
+# 2/3 - Strip all comments and PNG-metadata-chunks
+convert "$fileFullName" -strip "$fileFullName"
 
-# 2/3 - The actual conversion
-convert "$fileName"".""$fileExt" -resize "$width""x""$height"\> "$fileName"".png"
-
-# 3/3 - Cleanup - Original PNGs are overwritten. Remove anything not originally PNG format
+# 3/3 - If was not originally PNG - remove the old file
 if [ $fileExt != "png" ] ; then
 	rm $fileFullName
 fi

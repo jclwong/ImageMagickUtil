@@ -1,25 +1,25 @@
 #!/bin/sh
 #
-# This is a script that uses ImageMagick to resize (downsize only) all images at a directory path to a specified size.
+# Uses ImageMagick to downsize all images in directory
 #
 # Accepts: 	png, jpg, jpeg, gif
 # Outputs: 	png
-# Usage: 	./imageResizeBatch.sh WIDTH HEIGHT directoryPath
-# Ex:		./imageResizeBatch.sh 320 480 ~
-# 
+# Usage: 	./imageResizeBatch WIDTH HEIGHT dirPath
+# Ex:		./imageResizeBatch 320 480 ~
+#
 # Latest Test Environment
 # OSX:			10.12.3
 # ImageMagick:	7.0.5-4 Q16 x86_64
-# 
+#
 
 
 # =====================================
 # ==========[ Library Check ]==========
 # =====================================
 
-command -v convert >/dev/null 2>&1 || { 
-	echo >&2 'Error: cannot find "convert" command.... Is ImageMagick installed?'; 
-	exit 1; 
+command -v convert >/dev/null 2>&1 || {
+	echo >&2 'Error: cannot find "convert" command.... Is ImageMagick installed?';
+	exit 1;
 }
 
 # ================================================
@@ -28,10 +28,10 @@ command -v convert >/dev/null 2>&1 || {
 
 if [ "$#" -ne 3 ]; then
 	echo "Error:   Incorrect number of arguments"
-	echo "Usage:   imageResizeBatch.sh WIDTH HEIGHT dirPath"
+	echo "Usage:   imageResizeBatch WIDTH HEIGHT dirPath"
 	echo "Example: imageResizeBatch 360 480 ~"
 	exit 1
-fi
+fi\
 
 width=$1
 height=$2
@@ -61,7 +61,7 @@ echo "Begin Conversion"
 numConversions=0
 for f in *
 do
-    fileFullName=`echo $f|grep -i ".png\|.jpg\|.jpeg\|.gif"`
+    fileFullName=`echo $f|grep -i ".png\|.jpg\|.jpeg\|.gif\|.tiff"`
 	fileName="${fileFullName%.*}"
 	fileExt="${fileFullName##*.}"
 	if [ -n "$fileFullName" ] ; then
@@ -79,13 +79,15 @@ do
 	let "curConversion += 1"
 	echo "[""$curConversion"" / "" $numConversions""]"
 
-    fileFullName=`echo $f|grep -i ".png\|.jpg\|.jpeg\|.gif"`
+  fileFullName=`echo $f|grep -i ".png\|.jpg\|.jpeg\|.gif\|.tiff"`
 	fileName="${fileFullName%.*}"
 	fileExt="${fileFullName##*.}"
 	if [ -n "$fileFullName" ] ; then
-    	let "numConversions += 1"
-    fi
+
+		imageResize $width $height $fileFullName
+
+    	# let "numConversions += 1"
+  fi
 done
 
 printf "All done!\n\n"
-

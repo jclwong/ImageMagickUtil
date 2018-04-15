@@ -4,7 +4,7 @@
 #
 # Accepts: 	png, jpg, jpeg, gif
 # Outputs: 	png
-# Usage: 	./imageColorQuantize filename NUMCOLORS
+# Usage: 	./imageColorQuantize FILENAME NUMCOLORS
 # Ex:		./imageColorQuantize colorWheel.png 8
 # 
 # Latest Test Environment
@@ -28,7 +28,7 @@ command -v convert >/dev/null 2>&1 || {
 
 if [ "$#" -ne 2 ]; then
 	echo "Error:   Incorrect number of arguments ($#). Needs to be 2."
-	echo "Usage:   imageColorQuantize fileName NUMCOLORS"
+	echo "Usage:   imageColorQuantize FILENAME NUMCOLORS"
 	echo "Example: imageColorQuantize colorWheel.png 8"
 
 	exit 1

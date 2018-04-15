@@ -4,7 +4,7 @@
 #
 # Accepts: 	png, jpg, jpeg, gif
 # Outputs: 	png
-# Usage: 	./imageResize WIDTH HEIGHT filename
+# Usage: 	./imageResize WIDTH HEIGHT FILENAME
 # Ex:		./imageResize 320 480 image.png
 # 
 # Latest Test Environment
@@ -28,7 +28,7 @@ command -v convert >/dev/null 2>&1 || {
 
 if [ "$#" -ne 3 ]; then
 	echo "Error: Incorrect number of arguments ($#). Needs to be 3."
-	echo "Usage: imageResize WIDTH HEIGHT fileName"
+	echo "Usage: imageResize WIDTH HEIGHT FILENAME"
 	echo "Example: imageResize 360 480 test.png"
 
 	exit 1

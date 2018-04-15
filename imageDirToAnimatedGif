@@ -1,10 +1,11 @@
 #!/bin/sh
 #
 # Uses ImageMagick to convert images inside directory to animated GIF
+# Delay is in milliseconds
 #
 # Accepts: 	png, jpg, jpeg, gif
 # Outputs: 	png
-# Usage: 	./imageDirToAnimatedGif DELAY dirPath
+# Usage: 	./imageDirToAnimatedGif DELAY DIRPATH
 # Ex:		./imageDirToAnimatedGif 20 ~
 # 
 # Latest Test Environment
@@ -28,7 +29,7 @@ command -v convert >/dev/null 2>&1 || {
 
 if [ "$#" -ne 2 ]; then
 	echo "Error: Incorrect number of arguments ($#). Needs to be 2."
-	echo "Usage: imageDirToAnimatedGif DELAY directory"
+	echo "Usage: imageDirToAnimatedGif DELAY DIRPATH"
 	echo "Example: imageDirToAnimatedGif 20 ~"
 
 	exit 1

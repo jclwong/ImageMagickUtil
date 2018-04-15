@@ -1,71 +1,59 @@
 #!/bin/sh
 #
-# Uses ImageMagick to downsize all images in directory
+# Use ImageMagick to remove white background color
+# Fuzz: 5%
 #
-# Accepts: 	png, jpg, jpeg, gif
+# Accepts: 	png
 # Outputs: 	png
-# Usage: 	./imageResizeBatch WIDTH HEIGHT DIRPATH
-# Ex:		./imageResizeBatch 320 480 ~
-#
+# Usage: 	./imageRemoveBgWhiteBatch DIRPATH
+# Ex:		./imageRemoveBgWhiteBatch ~
+# 
 # Latest Test Environment
 # OSX:			10.12.3
 # ImageMagick:	7.0.5-4 Q16 x86_64
-#
-
+# 
 
 # =====================================
 # ==========[ Library Check ]==========
 # =====================================
 
-command -v convert >/dev/null 2>&1 || {
-	echo >&2 'Error: cannot find "convert" command.... Is ImageMagick installed?';
-	exit 1;
+command -v convert >/dev/null 2>&1 || { 
+	echo >&2 'Error: cannot find "convert" command.... Is ImageMagick installed?'; 
+	exit 1; 
 }
 
 # ================================================
 # ==========[ Arguments Validity Check ]==========
 # ================================================
 
-if [ "$#" -ne 3 ]; then
-	echo "Error:   Incorrect number of arguments"
-	echo "Usage:   imageResizeBatch WIDTH HEIGHT DIRPATH"
-	echo "Example: imageResizeBatch 360 480 ~"
+if [ "$#" -ne 1 ]; then
+	echo "Error: Incorrect number of arguments ($#). Needs to be 1."
+	echo "Usage: imageToPng DIRPATH"
+	echo "Example: imageToPng ~"
 	exit 1
-fi\
-
-width=$1
-height=$2
-dirPath=$3
-
-numRegExp='^[0-9]+$'
-if ! [[ $width =~ $numRegExp ]] ; then
-   echo "Error: Width is not a valid number" >&2
-   exit 1
 fi
-if ! [[ $height =~ $numRegExp ]] ; then
-   echo "Error: Height is not a valid number" >&2
-   exit 1
-fi
+
+dirPath=$1
+
 if [ ! -d "$dirPath" ]; then
    echo "Error: Directory path does not exist ($dirPath)" >&2
    exit 1
 fi
 
-echo "Resolution:" "$width""x""$height"
-echo "Begin Conversion"
+
 
 # ===================================================
 # ==========[ Find num conversions needed ]==========
 # ===================================================
 
-numConversions=0
+numToProcess=0
 for f in *
 do
     fileFullName=`echo $f|grep -i ".png\|.jpg\|.jpeg\|.gif\|.tiff"`
 	fileName="${fileFullName%.*}"
 	fileExt="${fileFullName##*.}"
 	if [ -n "$fileFullName" ] ; then
-    	let "numConversions += 1"
+    	let "numToProcess += 1"
     fi
 done
 
@@ -73,17 +61,16 @@ done
 # ==========[ Conversion ]==========
 # ==================================
 
-curConversion=0
+curProcess=0
+
 for f in *
 do
-	let "curConversion += 1"
-	echo "[""$curConversion"" / "" $numConversions""]"
+	let "curProcess += 1"
+	echo "[""$curProcess"" / "" $numToProcess""]"
 
 	fileFullName=`echo $f|grep -i ".png\|.jpg\|.jpeg\|.gif\|.tiff"`
-	fileName="${fileFullName%.*}"
-	fileExt="${fileFullName##*.}"
 	if [ -n "$fileFullName" ] ; then
-		imageResize $width $height $fileFullName
+		imageRemoveBgWhite $fileFullName
 	fi
 done
 

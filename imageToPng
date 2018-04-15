@@ -5,7 +5,7 @@
 #
 # Accepts: 	png, jpg, jpeg, gif
 # Outputs: 	png
-# Usage: 	./imageToPng filename
+# Usage: 	./imageToPng FILENAME
 # Ex:		./imageToPng image.png
 # 
 # Latest Test Environment
@@ -28,7 +28,7 @@ command -v convert >/dev/null 2>&1 || {
 
 if [ "$#" -ne 1 ]; then
 	echo "Error: Incorrect number of arguments ($#). Needs to be 1."
-	echo "Usage: imageToPng fileName"
+	echo "Usage: imageToPng FILENAME"
 	echo "Example: imageToPng test.png"
 	exit 1
 fi
